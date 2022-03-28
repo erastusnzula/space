@@ -1,0 +1,110 @@
+#:import gamemenu game_menu
+#:import welcome game_menu
+MainWidget:
+
+<MainWidget>:
+    play_button : play_button
+    settings_button: settings_button
+    exit_button: exit_button
+
+    canvas.before:
+        Rectangle:
+            source: 'bg1.jpeg'
+            size : self.size
+            pos: self.pos
+
+
+    WelcomeWidget:
+
+    Button:
+        id : settings_button
+        size_hint: .25,.15
+        text: 'SETTINGS'
+        pos_hint : {'y':.4,'left':1}
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        background_normal: ''
+        background_color: .3,1,.2,1
+
+        on_press:
+            root.manager.transition.direction = 'left'
+            app.open_settings()
+
+
+    Button:
+        id : play_button
+        size_hint: .2,.15
+        text: "PLAY"
+        pos_hint :{'center_x': .5, 'y':.4}
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        background_normal: ''
+        background_color: .3,1,.2,1
+
+        on_press:
+            root.play_button_pressed(self)
+    Button:
+        id : exit_button
+        on_release : root.exit_button_pressed(self)
+        pos_hint :{'y': .4,'right': 1}
+        size_hint: .2,.15
+        text: 'EXIT'
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        background_normal: ''
+        background_color: .3,1,.2,1
+
+    Label:
+
+        pos_hint :{'y': .1,'right': 1}
+        size_hint: 1,.2
+        text: 'S    P   A   C   E       T   R   A   V   E   L'
+        font_name : 'Sackers-Gothic-Std-Light.ttf'
+        font_size: dp(25)
+
+
+
+    Label:
+        text: "@erastus_nzula"
+        font_size: dp(20)
+        font_name : 'Eurostile.ttf'
+        size_hint: .2, .1
+        pos_hint : {'x':.02,'left':.1}
+        color: .3,.2,1
+
+<ScreenChangeUpdate>:
+    BoxLayout:
+        canvas:
+            Color:
+                rgba : 0.5,0.5,.5,.5
+            Rectangle:
+                size: self.size
+
+        Label:
+            text: root.status
+
+            font_name : 'Eurostile.ttf'
+            font_size: dp(25)
+
+
+
+
+
+<Game>:
+    canvas.before:
+        Rectangle:
+            source: 'bg1.jpeg'
+            size: self.size
+            pos: self.pos
+    menu_widget : menu_widget
+    perspective_x : self.width * .5
+    perspective_y : self.height * .75
+
+
+
+
+    GameMenuWidget:
+        id: menu_widget
+
+
+
