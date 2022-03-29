@@ -9,7 +9,7 @@ MainWidget:
 
     canvas.before:
         Rectangle:
-            source: 'bg1.jpeg'
+            source: 'b1.png'
             size : self.size
             pos: self.pos
 
@@ -24,7 +24,7 @@ MainWidget:
         font_name : 'Eurostile.ttf'
         font_size: dp(25)
         background_normal: ''
-        background_color: .3,1,.2,1
+        background_color: 1,.5,.5,1
 
         on_press:
             root.manager.transition.direction = 'left'
@@ -52,7 +52,7 @@ MainWidget:
         font_name : 'Eurostile.ttf'
         font_size: dp(25)
         background_normal: ''
-        background_color: .3,1,.2,1
+        background_color: 1,.5,.5,1
 
     Label:
 
@@ -93,18 +93,215 @@ MainWidget:
 <Game>:
     canvas.before:
         Rectangle:
-            source: 'bg1.jpeg'
+            source: 'b1.png'
             size: self.size
             pos: self.pos
     menu_widget : menu_widget
     perspective_x : self.width * .5
     perspective_y : self.height * .75
 
-
-
-
     GameMenuWidget:
         id: menu_widget
 
+<SelectChallenge>:
+    canvas.before:
+        Rectangle:
+            source: 'b1.png'
+            size: self.size
+            pos: self.pos
 
+    Button:
+        pos_hint: {'right': 1}
+        size_hint: None, None
+        size: dp(50), dp(50)
+        background_normal:'next.png'
+        background_down:'next.png'
+        on_release : root.proceed_to_game_button(self)
+    Button:
+        pos_hint: {'left': 1}
+        size_hint: None, None
+        size: dp(50), dp(50)
+        background_normal:'back.png'
+        background_down:'back.png'
+        on_release : root.go_to_main_screen(self)
+
+    Button:
+        pos_hint: {'center_x': .5}
+        size_hint: None, None
+        size: dp(200), dp(50)
+        text: 'SELECT CAR'
+        background_normal:''
+        background_color:1,.5,.5,1
+        on_release : root.select_car_button(self)
+    Label:
+        pos_hint: {'top':1}
+        size_hint : 1, .3
+        text: 'S    E   L   E   C   T       C    H   A   L   L   E   N   G   E'
+        font_name : 'Sackers-Gothic-Std-Light.ttf'
+        font_size: dp(18)
+
+    Button:
+        id: easy
+        text: 'EASY'
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        pos_hint : {'y':.4,'left':1}
+        background_normal: ''
+        background_color: 0,1,1,1
+        size_hint: .3, .3
+        on_release:
+            challenge_selected.text='EASY CHALLENGE SELECTED'
+            easy.background_normal =''
+            easy.background_color =0,1,1,1
+            medium.background_normal= ''
+            medium.background_color =  .5,.5,.5,1
+            advanced.background_normal= ''
+            advanced.background_color =  .5,.5,.5,1
+            root.easy_button_pressed(self)
+    Button:
+        id: medium
+        text: 'MEDIUM'
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        pos_hint :{'center_x': .5, 'y':.4}
+        background_normal: ''
+        background_color: .5,.5,.5,1
+        size_hint: .3, .3
+        on_release:
+            challenge_selected.text='MEDIUM CHALLENGE SELECTED'
+            medium.background_normal =''
+            medium.background_color =0,1,1,1
+            easy.background_normal= ''
+            easy.background_color =  .5,.5,.5,1
+            advanced.background_normal= ''
+            advanced.background_color =  .5,.5,.5,1
+            root.medium_button_pressed(self)
+    Button:
+        id:advanced
+        size_hint: .3, .3
+        text: 'ADVANCED'
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        pos_hint :{'y': .4,'right': 1}
+        background_normal: ''
+        background_color: .5,.5,.5,1
+        on_release:
+            challenge_selected.text='ADVANCED CHALLENGE SELECTED'
+            advanced.background_normal =''
+            advanced.background_color =0,1,1,1
+            easy.background_normal= ''
+            easy.background_color =  .5,.5,.5,1
+            medium.background_normal= ''
+            medium.background_color =  .5,.5,.5,1
+            root.advanced_button_pressed(self)
+
+    Label:
+        id : challenge_selected
+        size_hint: .3, .3
+        text: 'EASY CHALLENGE SELECTED'
+        font_name : 'Lcd.ttf'
+        font_size: dp(25)
+        pos_hint :{'y': .2,'center_x':.5}
+        background_normal: ''
+        background_color: 0,1,1,1
+        color : 0,1,0,1
+
+
+
+
+<SelectCar>:
+    canvas.before:
+        Rectangle:
+            source: 'b1.png'
+            size: self.size
+            pos: self.pos
+
+    Button:
+        pos_hint: {'right': 1}
+        size_hint: None, None
+        size: dp(50), dp(50)
+        background_normal:'next.png'
+        background_down:'next.png'
+        on_release : root.proceed_to_game_button(self)
+    Button:
+        pos_hint: {'left': 1}
+        size_hint: None, None
+        size: dp(50), dp(50)
+        background_normal:'back.png'
+        background_down:'back.png'
+        on_release : root.go_to_challenge_screen(self)
+
+    Label:
+        pos_hint: {'top':1}
+        size_hint : 1, .3
+        text: 'S    E   L   E   C   T       C    A  R'
+        font_name : 'Sackers-Gothic-Std-Light.ttf'
+        font_size: dp(18)
+
+    Button:
+        id: yellow_car
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        pos_hint : {'y':.4,'left':1}
+        background_normal: 'car_1.jpg'
+        background_down: 'car_1.jpg'
+        size_hint: .3, .3
+        on_release:
+            car_selected.text='YELLOW CAR SELECTED'
+            yellow_car.background_color =0.2,0.3,1,.5
+            yellow_car.text='SELECTED'
+            blue_car.text=''
+            blue_car.background_color = 1,1,1,1
+            red_car.text=''
+            red_car.background_color = 1,1,1,1
+            root.yellow_car_button_pressed(self)
+    Button:
+        id: red_car
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        pos_hint :{'center_x': .5, 'y':.4}
+        background_normal: 'car_2.png'
+        background_down: 'car_2.png'
+        size_hint: .3, .3
+        on_release:
+            car_selected.text='RED CAR SELECTED'
+            red_car.background_color =0.2,0.3,1,.5
+            red_car.text='SELECTED'
+
+            yellow_car.text=''
+            yellow_car.background_color = 1,1,1,1
+            blue_car.text=''
+            blue_car.background_color = 1,1,1,1
+            root.red_car_button_pressed(self)
+    Button:
+        id:blue_car
+        size_hint: .3, .3
+        font_name : 'Eurostile.ttf'
+        font_size: dp(25)
+        pos_hint :{'y': .4,'right': 1}
+        background_normal: 'car.png'
+        background_down: 'car.png'
+        background_color : 0.2,0.3,1,.5
+        text:'SELECTED'
+        on_release:
+            car_selected.text='BLUE CAR SELECTED'
+            blue_car.background_color =0.2,0.3,1,.5
+            blue_car.text='SELECTED'
+
+            yellow_car.text=''
+            yellow_car.background_color = 1,1,1,1
+            red_car.text=''
+            red_car.background_color = 1,1,1,1
+            root.blue_car_button_pressed(self)
+
+    Label:
+        id : car_selected
+        size_hint: .3, .3
+        text: 'BLUE CAR SELECTED'
+        font_name : 'Lcd.ttf'
+        color: 0,1,0,1
+        font_size: dp(25)
+        pos_hint :{'y': .1,'center_x':.5}
+        background_normal: ''
+        background_color: 0,1,1,1
 

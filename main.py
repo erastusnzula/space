@@ -5,7 +5,7 @@ from kivy import platform
 from kivy.app import App
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
-from kivy.graphics import Line, Color, Quad, Triangle
+from kivy.graphics import Line, Color, Quad
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import ObjectProperty, NumericProperty, Clock, StringProperty
@@ -41,9 +41,11 @@ class MainWidget(Screen):
     def screen_change(self, *args):
         app.screen_manager.transition.direction = 'right'
         if self.previous_screen == 'main_screen':
+            app.screen_manager.current = 'challenge'
+        elif self.previous_screen == 'challenge':
             app.screen_manager.current = 'game_screen'
         elif self.previous_screen == 'game_screen':
-            app.screen_manager.current = 'main_screen'
+            app.screen_manager.current = 'challenge'
 
     @staticmethod
     def exit_button_pressed(instance):
@@ -55,6 +57,94 @@ class ScreenChangeUpdate(Screen):
 
     def __init__(self, **kwargs):
         super(ScreenChangeUpdate, self).__init__(**kwargs)
+
+
+class SelectChallenge(Screen):
+    def __init__(self, **kwargs):
+        super(SelectChallenge, self).__init__(**kwargs)
+
+    @staticmethod
+    def proceed_to_game_button(*args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'change'
+        app.screen_change_update.status = 'Loading ...'
+        app.main_widget.previous_screen = 'challenge'
+        Clock.schedule_once(app.main_widget.screen_change, .5)
+
+    def go_to_main_screen(self, *args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'change'
+        Clock.schedule_once(self.main_screen, .5)
+
+    @staticmethod
+    def main_screen(*args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'main_screen'
+
+    def select_car_button(self, *args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'change'
+        app.screen_change_update.status = "Loading ..."
+        Clock.schedule_once(self.go_to_select_car, .5)
+
+    @staticmethod
+    def go_to_select_car(*args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'car'
+
+    @staticmethod
+    def easy_button_pressed(*args):
+        for tile in app.game.tiles:
+            tile.source = ''
+
+    @staticmethod
+    def medium_button_pressed(*args):
+        for tile in app.game.tiles:
+            tile.source = 'bg.jpg'
+
+    @staticmethod
+    def advanced_button_pressed(*args):
+        for tile in app.game.tiles:
+            tile.source = 'bg1.jpeg'
+
+
+class SelectCar(Screen):
+    def __init__(self, **kwargs):
+        super(SelectCar, self).__init__(**kwargs)
+
+    @staticmethod
+    def proceed_to_game_button(*args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'change'
+        app.screen_change_update.status = 'Loading ...'
+        app.main_widget.previous_screen = 'challenge'
+        Clock.schedule_once(app.main_widget.screen_change, .5)
+
+    def go_to_challenge_screen(self, *args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'change'
+        app.screen_change_update.status = 'Exiting ...'
+        Clock.schedule_once(self.challenge_screen, .5)
+
+    @staticmethod
+    def challenge_screen(*args):
+        app.screen_manager.transition.direction = 'right'
+        app.screen_manager.current = 'challenge'
+
+    @staticmethod
+    def yellow_car_button_pressed(*args):
+        ship = app.game.ship
+        ship.source = 'car_1.jpg'
+
+    @staticmethod
+    def red_car_button_pressed(*args):
+        ship = app.game.ship
+        ship.source = 'car_2.png'
+
+    @staticmethod
+    def blue_car_button_pressed(*args):
+        ship = app.game.ship
+        ship.source = 'car.png'
 
 
 class Game(Screen):
@@ -87,10 +177,10 @@ class Game(Screen):
     y_loop = 0
 
     ship = None
-    ship_height = 0.035
+    ship_height = 0.1
     ship_width = 0.1
     ship_base_height = 0.04
-    ship_coordinates = [(0, 0), (0, 0), (0, 0)]
+    ship_coordinates = [(0, 0), (0, 0), (0, 0), (0, 0)]
 
     game_over = False
     start_game = False
@@ -172,6 +262,15 @@ class Game(Screen):
         self.level_label.pos_hint = {'right': 1, 'top': 1}
         self.level_label.text = 'LEVEL : ' + str(1)
         self.sound_music.play()
+        Clock.schedule_interval(self.play_game_music, 53)
+        self.back_button.disabled = True
+        if self.check_platform():
+            Window.show_cursor = False
+            self.pause_button.opacity = 0
+
+    def play_game_music(self, dt):
+        if self.start_game and not self.game_over and not self.pause:
+            self.sound_music.play()
 
     def reset_game(self):
 
@@ -197,7 +296,7 @@ class Game(Screen):
     def back_button_pressed(self, *args):
         app.screen_manager.transition.direction = 'right'
         app.screen_manager.current = 'change'
-        app.screen_change_update.status = 'Quiting ...'
+        app.screen_change_update.status = 'Exiting ...'
         #
         self.reset_game()
         self.game_over = True
@@ -313,7 +412,7 @@ class Game(Screen):
         with self.canvas:
             Color(0, 1, 1)
             for i in range(0, self.number_of_tiles):
-                self.tiles.append(Quad())
+                self.tiles.append(Quad(source='', background_normal=''))
 
     def update_tiles(self):
         for i in range(0, self.number_of_tiles):
@@ -329,8 +428,8 @@ class Game(Screen):
 
     def initiate_ship(self):
         with self.canvas:
-            Color(0, 0, 0)
-            self.ship = Triangle()
+            Color(1, 1, 1)
+            self.ship = Quad(source='car.png', background_normal='')
 
     def update_ship(self):
         center_x = self.perspective_x
@@ -339,13 +438,15 @@ class Game(Screen):
         ship_height = self.ship_height * self.height
 
         self.ship_coordinates[0] = (center_x - half_ship_width, base_y)
-        self.ship_coordinates[1] = (center_x, base_y + ship_height)
-        self.ship_coordinates[2] = (center_x + half_ship_width, base_y)
+        self.ship_coordinates[1] = (center_x - half_ship_width, base_y + ship_height)
+        self.ship_coordinates[2] = (center_x + half_ship_width, base_y + ship_height)
+        self.ship_coordinates[3] = (center_x + half_ship_width, base_y)
 
         x1, y1 = self.transform(*self.ship_coordinates[0])
         x2, y2 = self.transform(*self.ship_coordinates[1])
         x3, y3 = self.transform(*self.ship_coordinates[2])
-        self.ship.points = [x1, y1, x2, y2, x3, y3]
+        x4, y4 = self.transform(*self.ship_coordinates[3])
+        self.ship.points = [x1, y1, x2, y2, x3, y3, x4, y4]
 
     def check_tile_ship_collusion(self, t_x, t_y):
         x_min, y_min = self.get_tile_coordinates(t_x, t_y)
@@ -400,7 +501,7 @@ class Game(Screen):
                 self.y_loop += 1
                 self.score_label.text = 'SCORE : ' + str(self.y_loop)
                 self.generate_coordinates()
-                levels = range(100, 1001, 100)
+                levels = range(100, 1000001, 100)
                 if self.y_loop in levels:
                     self.level += 1
                     self.level_label.text = 'LEVEL : ' + str(self.level)
@@ -423,6 +524,9 @@ class Game(Screen):
             self.sound_music.stop()
             self.sound_game_over_impact.play()
             Clock.schedule_once(self.play_game_over, .5)
+            self.back_button.disabled = False
+            if self.check_platform():
+                Window.show_cursor = True
 
     def play_game_over(self, *args):
         if self.game_over:
@@ -445,11 +549,21 @@ class Game(Screen):
     def pause_game(self, *args):
         if self.start_game:
             self.start_game = False
+            if self.check_platform():
+                Window.show_cursor = True
+                self.pause_button.opacity = 1
+            self.back_button.disabled = False
+            self.sound_music.stop()
 
     def resume_game(self):
         self.game_over = False
         self.pause = True
         self.start_game = True
+        if self.check_platform():
+            Window.show_cursor = False
+            self.pause_button.opacity = 0
+        self.back_button.disabled = True
+        self.sound_music.play()
 
     def pause_resume_control(self, *args):
         if self.pause:
@@ -482,6 +596,8 @@ class MainApp(App):
     main_widget = None
     game = None
     screen_change_update = None
+    challenge = None
+    car = None
 
     def build(self):
         self.screen_manager = ScreenManager(transition=NoTransition())
@@ -493,18 +609,25 @@ class MainApp(App):
 
         self.screen_change_update = ScreenChangeUpdate(name='change')
         self.screen_manager.add_widget(self.screen_change_update)
+
+        self.challenge = SelectChallenge(name='challenge')
+        self.screen_manager.add_widget(self.challenge)
+
+        self.car = SelectCar(name='car')
+        self.screen_manager.add_widget(self.car)
+
         self.icon = 'icon.png'
         self.title = 'Space'
         self.settings_cls = SettingsWithSidebar
         self.use_kivy_settings = False
-        #Window.size = (900, 400)
+        Window.size = (900, 400)
         return self.screen_manager
 
     def build_config(self, config):
         config.setdefaults('Game Settings', {
             'font_size': 100,
             'font_name': 'Eurostile.ttf',
-            'volume': 0.5
+            'volume': 0.5,
         })
 
     def build_settings(self, settings):
