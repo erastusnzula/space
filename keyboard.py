@@ -2,14 +2,13 @@ import sys
 
 
 def key_pressed(self, keyboard, keycode, text, modifier):
-
     if keycode[1] == 'left':
         self.current_speed = self.SPEED_x
     elif keycode[1] == 'right':
         self.current_speed = -self.SPEED_x
 
     elif keycode[1] == 'spacebar':
-        if self.pause_button.disabled == False:
+        if not self.pause_button.disabled:
             self.pause_resume_control()
     elif keycode[1] == 'q' or 'esc':
         sys.exit()

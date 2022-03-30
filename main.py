@@ -273,7 +273,6 @@ class Game(Screen):
             self.sound_music.play()
 
     def reset_game(self):
-
         self.current_offset_y = 0
         self.y_loop = 0
         self.current_speed = 0
@@ -297,7 +296,6 @@ class Game(Screen):
         app.screen_manager.transition.direction = 'right'
         app.screen_manager.current = 'change'
         app.screen_change_update.status = 'Exiting ...'
-        #
         self.reset_game()
         self.game_over = True
         self.menu_widget.opacity = 1
@@ -355,7 +353,6 @@ class Game(Screen):
         end_point = start_point + self.number_vertical_lines - 1
         min_x = self.get_line_x(start_point)
         max_x = self.get_line_x(end_point)
-
         for i in range(0, self.number_horizontal_lines):
             line_y = self.get_line_y(i)
             x1, y1 = self.transform(min_x, line_y)
@@ -377,17 +374,17 @@ class Game(Screen):
                 last_coordinates = self.tile_coordinates[-1]
                 last_point_x = last_coordinates[0]
                 last_point_y = last_coordinates[1] + 1
+        self.random_coordinates(last_point_x, last_point_y)
 
+    def random_coordinates(self, last_point_x, last_point_y):
         for i in range(len(self.tile_coordinates), self.number_of_tiles):
             random_x = randint(0, 2)
             start_point = -int(self.number_vertical_lines / 2) + 1
             end_point = start_point + self.number_vertical_lines - 1
-
             if last_point_x <= start_point:
                 random_x = 1
             elif last_point_x >= end_point - 1:
                 random_x = 2
-
             self.tile_coordinates.append((last_point_x, last_point_y))
             if random_x == 1:
                 last_point_x += 1
@@ -399,7 +396,6 @@ class Game(Screen):
                 self.tile_coordinates.append((last_point_x, last_point_y))
                 last_point_y += 1
                 self.tile_coordinates.append((last_point_x, last_point_y))
-
             last_point_y += 1
 
     def get_tile_coordinates(self, t_x, t_y):
@@ -497,36 +493,43 @@ class Game(Screen):
             self.current_offset_y += speed_y * time_factor
             spacing_y = self.horizontal_spacing * self.height
             while self.current_offset_y >= spacing_y:
-                self.current_offset_y -= spacing_y
-                self.y_loop += 1
-                self.score_label.text = 'SCORE : ' + str(self.y_loop)
-                self.generate_coordinates()
-                levels = range(100, 1000001, 100)
-                if self.y_loop in levels:
-                    self.level += 1
-                    self.level_label.text = 'LEVEL : ' + str(self.level)
-                    self.SPEED += 0.05
-                    # self.level_popup('LEVEL UPDATE', self.level_label.text)
+                self._generate_scores_and_levels(spacing_y)
+
             speed_x = self.current_speed * self.width / 100
             self.current_offset_x += speed_x * time_factor
         if not self.check_ship_collision() and not self.game_over:
-            self.game_over = True
-            self.menu_widget.opacity = 1
-            self.start_btn.opacity = 1
-            self.game_second_title.opacity = 1
-            self.start_btn.disabled = False
-            self.screen_title = 'G  A   M   E       O   V   E   R'
-            self.menu_widget.screen_title_object.font_size = dp(35)
-            self.start_btn.text = 'RESTART'
-            self.pause_button.disabled = True
-            self.score_label.pos_hint = {'x': 0, 'top': .8}
-            self.level_label.pos_hint = {'x': 0, 'top': .7}
-            self.sound_music.stop()
-            self.sound_game_over_impact.play()
-            Clock.schedule_once(self.play_game_over, .5)
-            self.back_button.disabled = False
-            if self.check_platform():
-                Window.show_cursor = True
+            self._end_game()
+
+    def _generate_scores_and_levels(self, spacing_y):
+        self.current_offset_y -= spacing_y
+        self.y_loop += 1
+        self.score_label.text = 'SCORE : ' + str(self.y_loop)
+        self.generate_coordinates()
+        levels = range(100, 1000001, 100)
+        if self.y_loop in levels:
+            self.level += 1
+            self.level_label.text = 'LEVEL : ' + str(self.level)
+            self.SPEED += 0.05
+            # self.level_popup('LEVEL UPDATE', self.level_label.text)
+
+    def _end_game(self):
+        self.game_over = True
+        self.menu_widget.opacity = 1
+        self.start_btn.opacity = 1
+        self.game_second_title.opacity = 1
+        self.start_btn.disabled = False
+        self.screen_title = 'G  A   M   E       O   V   E   R'
+        self.menu_widget.screen_title_object.font_size = dp(35)
+        self.start_btn.text = 'RESTART'
+        self.pause_button.disabled = True
+        self.score_label.pos_hint = {'x': 0, 'top': .8}
+        self.level_label.pos_hint = {'x': 0, 'top': .7}
+        self.sound_music.stop()
+        self.sound_game_over_impact.play()
+        Clock.schedule_once(self.play_game_over, .5)
+        self.back_button.disabled = False
+        if self.check_platform():
+            Window.show_cursor = True
 
     def play_game_over(self, *args):
         if self.game_over:
