@@ -9,7 +9,7 @@ MainWidget:
 
     canvas.before:
         Rectangle:
-            source: 'b1.png'
+            source: 'assets/images/b1.png'
             size : self.size
             pos: self.pos
 
@@ -21,7 +21,7 @@ MainWidget:
         size_hint: .25,.15
         text: 'SETTINGS'
         pos_hint : {'y':.4,'left':1}
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         background_normal: ''
         background_color: 1,.5,.5,1
@@ -36,7 +36,7 @@ MainWidget:
         size_hint: .2,.15
         text: "PLAY"
         pos_hint :{'center_x': .5, 'y':.4}
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         background_normal: ''
         background_color: .3,1,.2,1
@@ -49,7 +49,7 @@ MainWidget:
         pos_hint :{'y': .4,'right': 1}
         size_hint: .2,.15
         text: 'EXIT'
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         background_normal: ''
         background_color: 1,.5,.5,1
@@ -59,7 +59,7 @@ MainWidget:
         pos_hint :{'y': .1,'right': 1}
         size_hint: 1,.2
         text: 'S    P   A   C   E       T   R   A   V   E   L'
-        font_name : 'Sackers-Gothic-Std-Light.ttf'
+        font_name : 'assets/fonts/Sackers-Gothic-Std-Light.ttf'
         font_size: dp(25)
 
 
@@ -67,7 +67,7 @@ MainWidget:
     Label:
         text: "@erastus_nzula"
         font_size: dp(20)
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         size_hint: .2, .1
         pos_hint : {'x':.02,'left':.1}
         color: .3,.2,1
@@ -83,7 +83,7 @@ MainWidget:
         Label:
             text: root.status
 
-            font_name : 'Eurostile.ttf'
+            font_name : 'assets/fonts/Eurostile.ttf'
             font_size: dp(25)
 
 
@@ -93,7 +93,7 @@ MainWidget:
 <Game>:
     canvas.before:
         Rectangle:
-            source: 'b1.png'
+            source: 'assets/images/b1.png'
             size: self.size
             pos: self.pos
     menu_widget : menu_widget
@@ -106,7 +106,7 @@ MainWidget:
 <SelectChallenge>:
     canvas.before:
         Rectangle:
-            source: 'b1.png'
+            source: 'assets/images/b1.png'
             size: self.size
             pos: self.pos
 
@@ -114,21 +114,22 @@ MainWidget:
         pos_hint: {'right': 1}
         size_hint: None, None
         size: dp(50), dp(50)
-        background_normal:'next.png'
-        background_down:'next.png'
+        background_normal:'assets/images/next.png'
+        background_down:'assets/images/next.png'
         on_release : root.proceed_to_game_button(self)
     Button:
         pos_hint: {'left': 1}
         size_hint: None, None
         size: dp(50), dp(50)
-        background_normal:'back.png'
-        background_down:'back.png'
+        background_normal:'assets/images/back.png'
+        background_down:'assets/images/back.png'
         on_release : root.go_to_main_screen(self)
 
     Button:
+        id: select_car_button
         pos_hint: {'center_x': .5}
         size_hint: None, None
-        size: dp(200), dp(50)
+        size: dp(250), dp(50)
         text: 'SELECT CAR'
         background_normal:''
         background_color:1,.5,.5,1
@@ -137,13 +138,13 @@ MainWidget:
         pos_hint: {'top':1}
         size_hint : 1, .3
         text: 'S    E   L   E   C   T       C    H   A   L   L   E   N   G   E'
-        font_name : 'Sackers-Gothic-Std-Light.ttf'
+        font_name : 'assets/fonts/Sackers-Gothic-Std-Light.ttf'
         font_size: dp(18)
 
     Button:
         id: easy
         text: 'EASY'
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint : {'y':.4,'left':1}
         background_normal: ''
@@ -161,7 +162,7 @@ MainWidget:
     Button:
         id: medium
         text: 'MEDIUM'
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint :{'center_x': .5, 'y':.4}
         background_normal: ''
@@ -180,7 +181,7 @@ MainWidget:
         id:advanced
         size_hint: .3, .3
         text: 'ADVANCED'
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint :{'y': .4,'right': 1}
         background_normal: ''
@@ -199,7 +200,7 @@ MainWidget:
         id : challenge_selected
         size_hint: .3, .3
         text: 'EASY CHALLENGE SELECTED'
-        font_name : 'Lcd.ttf'
+        font_name : 'assets/fonts/Lcd.ttf'
         font_size: dp(25)
         pos_hint :{'y': .2,'center_x':.5}
         background_normal: ''
@@ -212,7 +213,7 @@ MainWidget:
 <SelectCar>:
     canvas.before:
         Rectangle:
-            source: 'b1.png'
+            source: 'assets/images/b1.png'
             size: self.size
             pos: self.pos
 
@@ -220,35 +221,35 @@ MainWidget:
         pos_hint: {'right': 1}
         size_hint: None, None
         size: dp(50), dp(50)
-        background_normal:'next.png'
-        background_down:'next.png'
+        background_normal:'assets/images/next.png'
+        background_down:'assets/images/next.png'
         on_release : root.proceed_to_game_button(self)
     Button:
         pos_hint: {'left': 1}
         size_hint: None, None
         size: dp(50), dp(50)
-        background_normal:'back.png'
-        background_down:'back.png'
+        background_normal:'assets/images/back.png'
+        background_down:'assets/images/back.png'
         on_release : root.go_to_challenge_screen(self)
 
     Label:
         pos_hint: {'top':1}
         size_hint : 1, .3
         text: 'S    E   L   E   C   T       C    A  R'
-        font_name : 'Sackers-Gothic-Std-Light.ttf'
+        font_name : 'assets/fonts/Sackers-Gothic-Std-Light.ttf'
         font_size: dp(18)
 
     Button:
         id: yellow_car
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint : {'y':.4,'left':1}
-        background_normal: 'car_1.jpg'
-        background_down: 'car_1.jpg'
+        background_normal: 'assets/images/mercury_car.png'
+        background_down: 'assets/images/mercury_car.png'
         size_hint: .3, .3
         on_release:
-            car_selected.text='YELLOW CAR SELECTED'
-            yellow_car.background_color =0.2,0.3,1,.5
+            car_selected.text='GREY CAR SELECTED'
+            yellow_car.background_color =.1,0.1,.1,.5
             yellow_car.text='SELECTED'
             blue_car.text=''
             blue_car.background_color = 1,1,1,1
@@ -257,11 +258,11 @@ MainWidget:
             root.yellow_car_button_pressed(self)
     Button:
         id: red_car
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint :{'center_x': .5, 'y':.4}
-        background_normal: 'car_2.png'
-        background_down: 'car_2.png'
+        background_normal: 'assets/images/car_2.png'
+        background_down: 'assets/images/car_2.png'
         size_hint: .3, .3
         on_release:
             car_selected.text='RED CAR SELECTED'
@@ -276,11 +277,11 @@ MainWidget:
     Button:
         id:blue_car
         size_hint: .3, .3
-        font_name : 'Eurostile.ttf'
+        font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint :{'y': .4,'right': 1}
-        background_normal: 'car.png'
-        background_down: 'car.png'
+        background_normal: 'assets/images/car.png'
+        background_down: 'assets/images/car.png'
         background_color : 0.2,0.3,1,.5
         text:'SELECTED'
         on_release:
@@ -298,10 +299,40 @@ MainWidget:
         id : car_selected
         size_hint: .3, .3
         text: 'BLUE CAR SELECTED'
-        font_name : 'Lcd.ttf'
+        font_name : 'assets/fonts/Lcd.ttf'
         color: 0,1,0,1
         font_size: dp(25)
         pos_hint :{'y': .1,'center_x':.5}
         background_normal: ''
         background_color: 0,1,1,1
+
+<-MenuSidebar>:
+    size_hint_x: None
+    width: '200dp'
+    buttons_layout: menu
+    close_button: button
+    GridLayout:
+        pos: root.pos
+        cols: 1
+        id: menu
+        padding: 5
+        canvas.after:
+            Color:
+                rgb: 0, .2, 1
+            Rectangle:
+                pos: self.right - 1, self.y
+                size: 1, self.height
+
+    Button:
+        text: 'Close'
+        id: button
+        size_hint: None, None
+        width: root.width - dp(20)
+        height: max(50, self.texture_size[1] + dp(20))
+        pos: root.x + dp(10), root.y + dp(10)
+        font_size: '30sp'
+        background_normal: ''
+        background_color: 1,.5,.5,1
+        font_name : 'assets/fonts/Eurostile.ttf'
+        font_size: dp(25)
 

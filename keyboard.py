@@ -1,6 +1,3 @@
-import sys
-
-
 def key_pressed(self, keyboard, keycode, text, modifier):
     if keycode[1] == 'left':
         self.current_speed = self.SPEED_x
@@ -10,8 +7,11 @@ def key_pressed(self, keyboard, keycode, text, modifier):
     elif keycode[1] == 'spacebar':
         if not self.pause_button.disabled:
             self.pause_resume_control()
-    elif keycode[1] == 'q' or 'esc':
-        sys.exit()
+    elif keycode[1] == 'enter':
+        if self.enter_key_activate and not self.pause and not self.start_game:
+            self.start_game_button()
+    elif keycode[1] == 'escape':
+        keyboard.release()
 
     return True
 
