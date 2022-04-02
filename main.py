@@ -9,11 +9,9 @@ from kivy.graphics import Line, Color, Quad
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import ObjectProperty, NumericProperty, Clock, StringProperty
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.modalview import ModalView
-from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen, ScreenManager, NoTransition
 from kivy.uix.settings import SettingsWithSidebar
 
@@ -62,6 +60,7 @@ class ScreenChangeUpdate(Screen):
 
 
 class SelectChallenge(Screen):
+
     def __init__(self, **kwargs):
         super(SelectChallenge, self).__init__(**kwargs)
 
@@ -75,6 +74,7 @@ class SelectChallenge(Screen):
 
     def go_to_main_screen(self, *args):
         app.screen_manager.transition.direction = 'right'
+        app.screen_change_update.status = 'Exiting ...'
         app.screen_manager.current = 'change'
         Clock.schedule_once(self.main_screen, .5)
 
@@ -214,16 +214,18 @@ class Game(Screen):
         Clock.schedule_interval(self.update, 1 / 60)
 
         self.back_button = Button(
-            size_hint=(None, None), size=(dp(50), dp(50)),
+            size_hint=(None, None), size=(dp(100), dp(50)), text="BACK",
             pos_hint={'left': 1}, background_normal='assets/images/back.png',
-            background_down='assets/images/back.png', on_release=self.back_button_pressed
+            background_down='assets/images/back.png', on_release=self.back_button_pressed,
         )
 
         self.pause_button = Button(
-            size_hint=(.2, .15),
+            size_hint=(None, None), size=(dp(150), dp(70)),
             pos_hint={'right': 1, 'top': .75}, on_press=self.pause_resume_control,
             text="PAUSE", font_name='assets/fonts/Eurostile.ttf', font_size=dp(20), disabled=True,
-            background_normal='', background_color=(.3, 1, .2, 1)
+            background_normal='assets/images/pause.png',
+            background_down='assets/images/pause.png',
+            opacity=0
         )
         self.score_label = Label(
             text="SCORE : " + self.score, font_name='assets/fonts/Eurostile.ttf', font_size=dp(20),
@@ -234,14 +236,16 @@ class Game(Screen):
             pos_hint={'x': 0, 'top': .7}, size_hint=(.2, .2),
             color=(1, 1, 0)
         )
-        self.start_btn = Button(size_hint=(.2, .15), pos_hint={'center_x': .5, 'center_y': .4},
+        self.start_btn = Button(size_hint=(None, None), size=(dp(200), dp(80)),
+                                pos_hint={'center_x': .5, 'center_y': .4},
                                 text="START", on_press=self.start_game_button,
                                 font_name='assets/fonts/Eurostile.ttf', font_size=dp(30),
-                                background_normal='', background_color=(.3, 1, .2, 1)
+                                background_normal='assets/images/play.png',
+                                background_down='assets/images/play.png'
 
                                 )
         self.game_second_title = Label(pos_hint={'y': .1, 'right': 1}, size_hint=(1, .2),
-                                       text='S    P   A   C   E       T   R   A   V   E   L',
+                                       text='S    P   A   C   E       R   A   C   E   R',
                                        font_name='assets/fonts/Sackers-Gothic-Std-Light.ttf', font_size=dp(25))
         self.add_widget(self.score_label)
         self.add_widget(self.level_label)
@@ -251,7 +255,6 @@ class Game(Screen):
         self.add_widget(self.game_second_title)
 
     def start_game_button(self, *args):
-        self.level_popup("LEVEL : " + str(1))
         if self.game_over and self.start_btn.text == "RESTART":
             self.sound_restart.play()
         else:
@@ -269,9 +272,12 @@ class Game(Screen):
         self.sound_music.play()
         Clock.schedule_interval(self.play_game_music, 53)
         self.back_button.disabled = True
+        self.back_button.opacity = 0
         if self.check_platform():
             Window.show_cursor = False
             self.pause_button.opacity = 0
+        else:
+            self.pause_button.opacity = 1
 
     def play_game_music(self, dt):
         if self.start_game and not self.game_over and not self.pause:
@@ -303,6 +309,7 @@ class Game(Screen):
         app.screen_change_update.status = 'Exiting ...'
         self.reset_game()
         self.game_over = True
+        self.start_game = False
         self.menu_widget.opacity = 1
         self.start_btn.opacity = 1
         self.game_second_title.opacity = 1
@@ -314,12 +321,14 @@ class Game(Screen):
         self.level_label.text = 'LEVEL : ' + str(1)
         self.pause_button.text = 'PAUSE'
         self.pause_button.disabled = True
+        self.pause_button.opacity = 0
         app.main_widget.previous_screen = 'game_screen'
         self.score_label.pos_hint = {'x': 0, 'top': .8}
         self.level_label.pos_hint = {'x': 0, 'top': .7}
         self.SPEED = 1
         self.sound_music.stop()
         self.enter_key_activate = False
+
         Clock.schedule_once(app.main_widget.screen_change, .5)
 
     def initiate_vertical_lines(self):
@@ -516,10 +525,12 @@ class Game(Screen):
             self.level += 1
             self.level_label.text = 'LEVEL : ' + str(self.level)
             self.SPEED += 0.05
-            self.level_popup(self.level_label.text)
+            if self.check_platform():
+                self.level_popup(self.level_label.text)
 
     def _end_game(self):
         self.game_over = True
+        self.start_game = False
         self.menu_widget.opacity = 1
         self.start_btn.opacity = 1
         self.game_second_title.opacity = 1
@@ -528,12 +539,14 @@ class Game(Screen):
         self.menu_widget.screen_title_object.font_size = dp(35)
         self.start_btn.text = 'RESTART'
         self.pause_button.disabled = True
+        self.pause_button.opacity = 0
         self.score_label.pos_hint = {'x': 0, 'top': .8}
         self.level_label.pos_hint = {'x': 0, 'top': .7}
         self.sound_music.stop()
         self.sound_game_over_impact.play()
         Clock.schedule_once(self.play_game_over, .5)
         self.back_button.disabled = False
+        self.back_button.opacity = 1
         if self.check_platform():
             Window.show_cursor = True
 
@@ -548,7 +561,7 @@ class Game(Screen):
                                )
         self.popup.add_widget(Label(text=message, font_name='assets/fonts/Lcd.ttf', color=(1, 1, 0), font_size=dp(25)))
         self.popup.open()
-        Clock.schedule_once(self.close_popup, .05)
+        Clock.schedule_once(self.close_popup, 2)
 
     def close_popup(self, *args):
         self.popup.dismiss()
@@ -560,6 +573,7 @@ class Game(Screen):
                 Window.show_cursor = True
                 self.pause_button.opacity = 1
             self.back_button.disabled = False
+            self.back_button.opacity = 1
             self.sound_music.stop()
 
     def resume_game(self):
@@ -570,6 +584,7 @@ class Game(Screen):
             Window.show_cursor = False
             self.pause_button.opacity = 0
         self.back_button.disabled = True
+        self.back_button.opacity=0
         self.sound_music.play()
 
     def pause_resume_control(self, *args):
@@ -624,7 +639,7 @@ class MainApp(App):
         self.screen_manager.add_widget(self.car)
 
         self.icon = 'assets/images/logo.png'
-        self.title = 'Space'
+        self.title = 'Space Racer'
         self.settings_cls = SettingsWithSidebar
         self.use_kivy_settings = False
         # Window.size = (900, 400)
@@ -638,13 +653,14 @@ class MainApp(App):
         })
 
     def build_settings(self, settings):
-        settings.add_json_panel('SPACE', self.config, data=settings_json)
+        settings.add_json_panel('SPACE RACER', self.config, data=settings_json)
 
     def on_config_change(self, config, section, key, value):
         get_font = self.config.get('Game Settings', 'font_name')
-        font_name = 'assets/fonts/'+get_font
+        font_name = 'assets/fonts/' + get_font
         font_size = self.config.get('Game Settings', 'font_size')
         volume = self.config.get('Game Settings', 'volume')
+
         app.game.change_volume(volume)
         for object_p in app.main_widget.objects:
             object_p.font_size = dp(font_size)
@@ -653,6 +669,8 @@ class MainApp(App):
         app.game.start_btn.font_size = font_size
         app.game.pause_button.font_name = font_name
         app.game.pause_button.font_size = font_size
+        app.game.back_button.font_name = font_name
+        app.game.back_button.font_size = font_size
         app.challenge.ids.easy.font_name = font_name
         app.challenge.ids.easy.font_size = font_size
         app.challenge.ids.medium.font_name = font_name
@@ -660,13 +678,25 @@ class MainApp(App):
         app.challenge.ids.advanced.font_name = font_name
         app.challenge.ids.advanced.font_size = font_size
         app.challenge.ids.challenge_selected.font_name = font_name
+        app.challenge.ids.challenge_back_button.font_name = font_name
+        app.challenge.ids.challenge_next_button.font_name = font_name
         app.challenge.ids.challenge_selected.font_size = font_size
+        app.challenge.ids.challenge_back_button.font_size = font_size
+        app.challenge.ids.challenge_next_button.font_size = font_size
         app.challenge.ids.select_car_button.font_name = font_name
         app.challenge.ids.select_car_button.font_size = font_size
         app.car.ids.car_selected.font_name = font_name
+        app.car.ids.car_selected.font_size = font_size
         app.car.ids.yellow_car.font_name = font_name
+        app.car.ids.yellow_car.font_size = font_size
         app.car.ids.red_car.font_name = font_name
+        app.car.ids.red_car.font_size = font_size
+        app.car.ids.car_back_button.font_name = font_name
+        app.car.ids.car_back_button.font_size = font_size
+        app.car.ids.car_next_button.font_name = font_name
+        app.car.ids.car_next_button.font_size = font_size
         app.car.ids.blue_car.font_name = font_name
+        app.car.ids.blue_car.font_size = font_size
 
     def on_stop(self, *args):
         app.main_widget.exit_button_pressed(args)

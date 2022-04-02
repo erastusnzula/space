@@ -6,64 +6,80 @@ MainWidget:
     play_button : play_button
     settings_button: settings_button
     exit_button: exit_button
-
     canvas.before:
         Rectangle:
             source: 'assets/images/b1.png'
             size : self.size
             pos: self.pos
-
-
     WelcomeWidget:
-
     Button:
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba: 1,0,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
         id : settings_button
-        size_hint: .25,.15
+        size_hint: None, None
+        size:(dp(170), dp(70))
         text: 'SETTINGS'
         pos_hint : {'y':.4,'left':1}
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
-        background_normal: ''
-        background_color: 1,.5,.5,1
-
         on_press:
             root.manager.transition.direction = 'left'
             app.open_settings()
-
-
     Button:
         id : play_button
-        size_hint: .2,.15
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba:0,1,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
+        size_hint: None, None
+        size:(dp(150), dp(70))
         text: "PLAY"
         pos_hint :{'center_x': .5, 'y':.4}
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
-        background_normal: ''
-        background_color: .3,1,.2,1
-
+        #background_normal: ''
+        #background_color: .3,1,.2,1
         on_press:
             root.play_button_pressed(self)
     Button:
         id : exit_button
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba:1,0,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
         on_release : root.exit_button_pressed(self)
         pos_hint :{'y': .4,'right': 1}
-        size_hint: .2,.15
+        size_hint: None, None
+        size:(dp(150), dp(70))
         text: 'EXIT'
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
-        background_normal: ''
-        background_color: 1,.5,.5,1
+        #background_normal: ''
+        #background_color: 1,.5,.5,1
 
     Label:
-
         pos_hint :{'y': .1,'right': 1}
         size_hint: 1,.2
-        text: 'S    P   A   C   E       T   R   A   V   E   L'
+        text: 'S    P   A   C   E       R   A   C   E   R'
         font_name : 'assets/fonts/Sackers-Gothic-Std-Light.ttf'
         font_size: dp(25)
-
-
-
     Label:
         text: "@erastus_nzula"
         font_size: dp(20)
@@ -72,23 +88,20 @@ MainWidget:
         pos_hint : {'x':.02,'left':.1}
         color: .3,.2,1
 
+
+
 <ScreenChangeUpdate>:
     BoxLayout:
         canvas:
             Color:
-                rgba : 0.5,0.5,.5,.5
+                rgba : 0.5,0.5,1,1
             Rectangle:
                 size: self.size
 
         Label:
             text: root.status
-
             font_name : 'assets/fonts/Eurostile.ttf'
             font_size: dp(25)
-
-
-
-
 
 <Game>:
     canvas.before:
@@ -99,9 +112,10 @@ MainWidget:
     menu_widget : menu_widget
     perspective_x : self.width * .5
     perspective_y : self.height * .75
-
     GameMenuWidget:
         id: menu_widget
+
+
 
 <SelectChallenge>:
     canvas.before:
@@ -111,28 +125,55 @@ MainWidget:
             pos: self.pos
 
     Button:
+        id : challenge_next_button
+        canvas.before:
+            Color:
+                rgba:0,1,1,.5
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
         pos_hint: {'right': 1}
         size_hint: None, None
-        size: dp(50), dp(50)
-        background_normal:'assets/images/next.png'
-        background_down:'assets/images/next.png'
+        size: dp(100), dp(50)
+        text: 'NEXT'
+        background_normal:''
+        background_color:0,0,0,0
         on_release : root.proceed_to_game_button(self)
     Button:
+        id:challenge_back_button
+        canvas.before:
+            Color:
+                rgba: 1,0,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
+        text : 'BACK'
         pos_hint: {'left': 1}
         size_hint: None, None
-        size: dp(50), dp(50)
-        background_normal:'assets/images/back.png'
-        background_down:'assets/images/back.png'
+        size: dp(100), dp(50)
+        background_normal:''
+        background_color : 0,0,0,0
         on_release : root.go_to_main_screen(self)
 
     Button:
         id: select_car_button
+        background_normal: ''
+        background_color: 0,0,0,0
+        canvas.before:
+            Color:
+                rgba:1,.5,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
         pos_hint: {'center_x': .5}
         size_hint: None, None
         size: dp(250), dp(50)
         text: 'SELECT CAR'
-        background_normal:''
-        background_color:1,.5,.5,1
+        #background_normal:''
+        #background_color:1,.5,.5,1
         on_release : root.select_car_button(self)
     Label:
         pos_hint: {'top':1}
@@ -147,17 +188,17 @@ MainWidget:
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint : {'y':.4,'left':1}
-        background_normal: ''
-        background_color: 0,1,1,1
+        background_normal: 'assets/images/selected.png'
+        background_down: 'assets/images/selected.png'
         size_hint: .3, .3
         on_release:
             challenge_selected.text='EASY CHALLENGE SELECTED'
-            easy.background_normal =''
-            easy.background_color =0,1,1,1
-            medium.background_normal= ''
-            medium.background_color =  .5,.5,.5,1
-            advanced.background_normal= ''
-            advanced.background_color =  .5,.5,.5,1
+            easy.background_normal ='assets/images/selected.png'
+            easy.background_down ='assets/images/selected.png'
+            medium.background_normal= 'assets/images/unselected.png'
+            medium.background_down =  'assets/images/unselected.png'
+            advanced.background_normal= 'assets/images/unselected.png'
+            advanced.background_down =  'assets/images/unselected.png'
             root.easy_button_pressed(self)
     Button:
         id: medium
@@ -165,17 +206,17 @@ MainWidget:
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint :{'center_x': .5, 'y':.4}
-        background_normal: ''
-        background_color: .5,.5,.5,1
+        background_normal: 'assets/images/unselected.png'
+        background_down: 'assets/images/unselected.png'
         size_hint: .3, .3
         on_release:
             challenge_selected.text='MEDIUM CHALLENGE SELECTED'
-            medium.background_normal =''
-            medium.background_color =0,1,1,1
-            easy.background_normal= ''
-            easy.background_color =  .5,.5,.5,1
-            advanced.background_normal= ''
-            advanced.background_color =  .5,.5,.5,1
+            medium.background_normal ='assets/images/selected.png'
+            medium.background_down ='assets/images/selected.png'
+            easy.background_normal= 'assets/images/unselected.png'
+            easy.background_down = 'assets/images/unselected.png'
+            advanced.background_normal= 'assets/images/unselected.png'
+            advanced.background_down =  'assets/images/unselected.png'
             root.medium_button_pressed(self)
     Button:
         id:advanced
@@ -184,16 +225,16 @@ MainWidget:
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
         pos_hint :{'y': .4,'right': 1}
-        background_normal: ''
-        background_color: .5,.5,.5,1
+        background_normal: 'assets/images/unselected.png'
+        background_down: 'assets/images/unselected.png'
         on_release:
             challenge_selected.text='ADVANCED CHALLENGE SELECTED'
-            advanced.background_normal =''
-            advanced.background_color =0,1,1,1
-            easy.background_normal= ''
-            easy.background_color =  .5,.5,.5,1
-            medium.background_normal= ''
-            medium.background_color =  .5,.5,.5,1
+            advanced.background_normal ='assets/images/selected.png'
+            advanced.background_down ='assets/images/selected.png'
+            easy.background_normal= 'assets/images/unselected.png'
+            easy.background_down =  'assets/images/unselected.png'
+            medium.background_normal= 'assets/images/unselected.png'
+            medium.background_down =  'assets/images/unselected.png'
             root.advanced_button_pressed(self)
 
     Label:
@@ -209,7 +250,6 @@ MainWidget:
 
 
 
-
 <SelectCar>:
     canvas.before:
         Rectangle:
@@ -218,18 +258,36 @@ MainWidget:
             pos: self.pos
 
     Button:
+        id : car_next_button
+        canvas.before:
+            Color:
+                rgba:0,1,1,.5
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
         pos_hint: {'right': 1}
         size_hint: None, None
-        size: dp(50), dp(50)
-        background_normal:'assets/images/next.png'
-        background_down:'assets/images/next.png'
+        size: dp(100), dp(50)
+        background_normal:''
+        background_color: 0,0,0,0
+        text : 'NEXT'
         on_release : root.proceed_to_game_button(self)
     Button:
+        id : car_back_button
+        canvas.before:
+            Color:
+                rgba: 1,0,0,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
+        text : 'BACK'
         pos_hint: {'left': 1}
         size_hint: None, None
-        size: dp(50), dp(50)
-        background_normal:'assets/images/back.png'
-        background_down:'assets/images/back.png'
+        size: dp(100), dp(50)
+        background_normal:''
+        background_color: 0,0,0,0
         on_release : root.go_to_challenge_screen(self)
 
     Label:
@@ -306,6 +364,7 @@ MainWidget:
         background_normal: ''
         background_color: 0,1,1,1
 
+
 <-MenuSidebar>:
     size_hint_x: None
     width: '200dp'
@@ -324,7 +383,14 @@ MainWidget:
                 size: 1, self.height
 
     Button:
-        text: 'Close'
+        canvas.before:
+            Color:
+                rgba: 1,.5,.5,1
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: [10]
+        text: 'CLOSE'
         id: button
         size_hint: None, None
         width: root.width - dp(20)
@@ -332,7 +398,7 @@ MainWidget:
         pos: root.x + dp(10), root.y + dp(10)
         font_size: '30sp'
         background_normal: ''
-        background_color: 1,.5,.5,1
+        background_color: 0,0,0,0
         font_name : 'assets/fonts/Eurostile.ttf'
         font_size: dp(25)
 

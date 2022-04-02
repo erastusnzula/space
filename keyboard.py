@@ -8,7 +8,7 @@ def key_pressed(self, keyboard, keycode, text, modifier):
         if not self.pause_button.disabled:
             self.pause_resume_control()
     elif keycode[1] == 'enter':
-        if self.enter_key_activate and not self.pause and not self.start_game:
+        if self.enter_key_activate and not self.start_game and not self.pause:
             self.start_game_button()
     elif keycode[1] == 'escape':
         keyboard.release()
