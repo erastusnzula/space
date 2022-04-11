@@ -11,6 +11,7 @@ class GameMenuWidget(Screen):
             return False
         return super(Screen, self).on_touch_down(touch)
 
+
 class WelcomeWidget(Screen):
     screen_title_object = ObjectProperty()
 
