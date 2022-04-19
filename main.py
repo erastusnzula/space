@@ -9,6 +9,7 @@ from kivy.graphics import Line, Color, Quad
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import ObjectProperty, NumericProperty, Clock, StringProperty
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.modalview import ModalView
@@ -189,6 +190,7 @@ class Game(Screen):
     platforms = None
     pause = False
     popup = None
+    dialog = None
     level = NumericProperty(1)
     sound_begin = None
     sound_game_over_impact = None
@@ -217,6 +219,11 @@ class Game(Screen):
             size_hint=(None, None), size=(dp(100), dp(50)), text="BACK",
             pos_hint={'left': 1}, background_normal='assets/images/back.png',
             background_down='assets/images/back.png', on_release=self.back_button_pressed,
+        )
+        self.help_button = Button(
+            size_hint=(None, None), size=(dp(100), dp(50)), text="HELP",
+            pos_hint={'right': 1}, background_normal='assets/images/back.png',
+            background_down='assets/images/back.png', on_release=self.help,
         )
 
         self.pause_button = Button(
@@ -250,9 +257,33 @@ class Game(Screen):
         self.add_widget(self.score_label)
         self.add_widget(self.level_label)
         self.add_widget(self.back_button)
+        self.add_widget(self.help_button)
         self.add_widget(self.start_btn)
         self.add_widget(self.pause_button)
         self.add_widget(self.game_second_title)
+
+    def help(self, obj):
+        b = BoxLayout(orientation='vertical')
+        close_button = Button(text="CLOSE", on_release=self.close_dialog, size_hint=(None, None),
+                              size=(dp(100), dp(50)),
+                              pos_hint={'right': 1}, background_normal='assets/images/back.png',
+                              background_down='assets/images/back.png', )
+        self.dialog = ModalView(auto_dismiss=False, size_hint=(.9, .8), background_color=(0.5, 0.5, 1, 1),
+                                overlay_color=[1, 1, 1, 1], pos_hint={'center_x': .5, 'top': .9},
+                                background=''
+                                )
+
+        b.add_widget(
+            Label(text='INSTRUCTIONS', color=(1, 1, 0), font_size=dp(20), size_hint=(1, .2)))
+        b.add_widget(
+            Label(text='Keep the car on track using right and left arrow keys', color=(1, 1, 0), font_size=dp(20)))
+        b.add_widget(close_button)
+        self.dialog.add_widget(b)
+
+        self.dialog.open()
+
+    def close_dialog(self, obj):
+        self.dialog.dismiss()
 
     def start_game_button(self, *args):
         if self.game_over and self.start_btn.text == "RESTART":
@@ -273,6 +304,8 @@ class Game(Screen):
         Clock.schedule_interval(self.play_game_music, 53)
         self.back_button.disabled = True
         self.back_button.opacity = 0
+        self.help_button.disabled = True
+        self.help_button.opacity = 0
         if self.check_platform():
             Window.show_cursor = False
             self.pause_button.opacity = 0
@@ -547,6 +580,8 @@ class Game(Screen):
         Clock.schedule_once(self.play_game_over, .5)
         self.back_button.disabled = False
         self.back_button.opacity = 1
+        self.help_button.disabled = False
+        self.help_button.opacity = 1
         if self.check_platform():
             Window.show_cursor = True
 
@@ -574,6 +609,8 @@ class Game(Screen):
                 self.pause_button.opacity = 1
             self.back_button.disabled = False
             self.back_button.opacity = 1
+            self.help_button.disabled = False
+            self.help_button.opacity = 1
             self.sound_music.stop()
 
     def resume_game(self):
@@ -584,7 +621,9 @@ class Game(Screen):
             Window.show_cursor = False
             self.pause_button.opacity = 0
         self.back_button.disabled = True
-        self.back_button.opacity=0
+        self.back_button.opacity = 0
+        self.help_button.disabled = True
+        self.help_button.opacity = 0
         self.sound_music.play()
 
     def pause_resume_control(self, *args):
